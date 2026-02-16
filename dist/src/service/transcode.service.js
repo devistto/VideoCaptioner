@@ -25,7 +25,7 @@ let TranscodeService = class TranscodeService {
                 const maxDuration = 300;
                 const duration = metadata.format?.duration;
                 if (!duration || duration > maxDuration)
-                    return reject(new common_1.BadRequestException("File exceeds duration limit of 5 minutes"));
+                    return reject(new common_1.BadRequestException("File exceeds max time limit of 5 minutes"));
                 return resolve(true);
             });
         });

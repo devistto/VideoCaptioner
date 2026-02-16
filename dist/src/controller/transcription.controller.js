@@ -12,39 +12,35 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MediaController = void 0;
+exports.TranscriptionController = void 0;
 const common_1 = require("@nestjs/common");
 const multer_config_1 = require("../config/multer.config");
-const transcribe_options_dto_1 = require("../dto/transcribe.options.dto");
-const media_service_1 = require("../service/media.service");
 const platform_express_1 = require("@nestjs/platform-express");
-const throttler_1 = require("@nestjs/throttler");
-let MediaController = class MediaController {
-    mediaservice;
-    constructor(mediaservice) {
-        this.mediaservice = mediaservice;
+const transcription_service_1 = require("../service/transcription.service");
+let TranscriptionController = class TranscriptionController {
+    transcriptionService;
+    constructor(transcriptionService) {
+        this.transcriptionService = transcriptionService;
     }
-    async transcribe(req, dto, file) {
+    async create(req, file) {
         if (!file)
-            throw new common_1.BadRequestException("File field is not defined");
-        const srt = await this.mediaservice.transcribe(file.path, dto);
-        return srt;
+            throw new common_1.BadRequestException("File is missing");
+        const result = await this.transcriptionService.create(file.path);
+        return result;
     }
 };
-exports.MediaController = MediaController;
+exports.TranscriptionController = TranscriptionController;
 __decorate([
-    (0, common_1.UseGuards)(throttler_1.ThrottlerGuard),
-    (0, common_1.Post)("transcribe"),
+    (0, common_1.Post)("transcriptions"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerConfig)),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, transcribe_options_dto_1.TranscribeOptionsDto, Object]),
+    __metadata("design:paramtypes", [Request, Object]),
     __metadata("design:returntype", Promise)
-], MediaController.prototype, "transcribe", null);
-exports.MediaController = MediaController = __decorate([
+], TranscriptionController.prototype, "create", null);
+exports.TranscriptionController = TranscriptionController = __decorate([
     (0, common_1.Controller)("media"),
-    __metadata("design:paramtypes", [media_service_1.MediaService])
-], MediaController);
-//# sourceMappingURL=media.controller.js.map
+    __metadata("design:paramtypes", [transcription_service_1.TranscriptionService])
+], TranscriptionController);
+//# sourceMappingURL=transcription.controller.js.map

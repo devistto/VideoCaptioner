@@ -8,27 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const media_controller_1 = require("./controller/media.controller");
-const media_service_1 = require("./service/media.service");
 const transcode_service_1 = require("./service/transcode.service");
-const throttler_1 = require("@nestjs/throttler");
+const transcription_controller_1 = require("./controller/transcription.controller");
+const transcription_service_1 = require("./service/transcription.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            throttler_1.ThrottlerModule.forRoot({
-                throttlers: [
-                    {
-                        ttl: 60000,
-                        limit: 10,
-                    },
-                ],
-            }),
-        ],
-        controllers: [media_controller_1.MediaController],
-        providers: [media_service_1.MediaService, transcode_service_1.TranscodeService]
+        controllers: [transcription_controller_1.TranscriptionController],
+        providers: [transcription_service_1.TranscriptionService, transcode_service_1.TranscodeService]
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

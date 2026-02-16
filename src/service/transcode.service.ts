@@ -21,7 +21,7 @@ export class TranscodeService {
                 const duration = metadata.format?.duration;
 
                 if (!duration || duration > maxDuration) return reject(
-                    new BadRequestException("File exceeds duration limit of 5 minutes")
+                    new BadRequestException("File exceeds max time limit of 5 minutes")
                 );
 
                 return resolve(true)
@@ -31,6 +31,7 @@ export class TranscodeService {
 
     async exec(filePath: string): Promise<string> {
         await this.validate(filePath);
+        
         const outputPath = path.join(path.dirname(filePath), "audio.wav");
 
         return new Promise((resolve, reject) => {
