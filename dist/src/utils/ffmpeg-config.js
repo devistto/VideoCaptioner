@@ -9,4 +9,4 @@ const ffprobe_static_1 = __importDefault(require("ffprobe-static"));
 fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
 fluent_ffmpeg_1.default.setFfprobePath(ffprobe_static_1.default.path);
 exports.default = fluent_ffmpeg_1.default;
-//# sourceMappingURL=ffmpeg.config.js.map
+//# sourceMappingURL=ffmpeg-config.js.map

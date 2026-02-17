@@ -5,11 +5,11 @@ import fs from "node:fs"
 import { customAlphabet } from "nanoid"
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
 
-export const multerConfig: MulterOptions = {
+export const multerOptions: MulterOptions = {
     storage: diskStorage({
         destination(req, file, callback) {
             const base = path.join(process.cwd(), "uploads");
-            const fileFolder = customAlphabet("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5);
+            const fileFolder = customAlphabet("abcdefghijklmnopqrstuvwxyz123456789", 10);
             const filePath = path.join(base, fileFolder());
 
             if (!fs.existsSync(filePath)) fs.mkdirSync(filePath, { recursive: true });
@@ -20,7 +20,7 @@ export const multerConfig: MulterOptions = {
         },
     }),
     limits: {
-        fileSize: 250 * 1024 * 1024
+        fileSize: 500 * 1024 * 1024
     },
 
     fileFilter(req, file, callback) {

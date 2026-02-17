@@ -1,5 +1,5 @@
 export declare class TranscodeService {
-    private validate;
+    validate(filePath: string): Promise<unknown>;
     extract(filePath: string): Promise<string>;
-    burn(filePath: string, srtPath: string): Promise<unknown>;
+    burn(filePath: string, content: string): Promise<unknown>;
 }

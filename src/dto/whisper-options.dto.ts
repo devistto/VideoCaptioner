@@ -1,4 +1,4 @@
-import { IsEnum, IsIn, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsEnum, IsIn } from "class-validator";
 
 export enum WhisperLanguage {
     Afrikaans = "af", Arabic = "ar", Armenian = "hy", Azerbaijani = "az", Belarusian = "be", Bosnian = "bs",

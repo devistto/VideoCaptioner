@@ -1,15 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { TranscodeService } from "./transcode.service";
 import { readFile } from "fs/promises";
-import { type IWhisperOptions } from "src/interface/whisper-options";
-import fs from "node:fs"
-import path from "node:path"
+import { type IWhisperOptions } from "src/interface/Iwhisper-options";
 
 @Injectable()
-export class TranscriptionService {
+export class UploadService {
     constructor(private transcodeService: TranscodeService) { }
 
     async create(filePath: string, options: IWhisperOptions) {
+        await this.transcodeService.validate(filePath);
         const audioPath = await this.transcodeService.extract(filePath);
 
         const buffer = await readFile(audioPath);
@@ -19,21 +18,17 @@ export class TranscriptionService {
         formData.append("audio_file", blob, "audio.wav");
 
         const baseUrl = "http://localhost:9000/asr?output=srt";
-        const queryParams = `?task=${options.task}&language=${options.audio_language}&initial_prompt=${options.prompt}&output=srt`;
-        const url = baseUrl+queryParams
+        const queryParams = `?task=${options.task}&language=${options.audio_language}&output=srt`;
+        const url = baseUrl + queryParams
 
         const response = await fetch(url, {
             method: "POST",
             body: formData,
         });
 
-        const srt = await response.text();
-        const dir = path.dirname(filePath);
-        const srtPath = `${dir}/subs.srt`;
+        const content = await response.text();
+        const videoPath = await this.transcodeService.burn(filePath, content) as string;
 
-        fs.writeFileSync(srtPath, srt, { encoding: "utf8" });
-
-        const videoPath = await this.transcodeService.burn(filePath, srtPath) as string;
         return videoPath
     }
 }

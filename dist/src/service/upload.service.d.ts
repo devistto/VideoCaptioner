@@ -1,6 +1,6 @@
 import { TranscodeService } from "./transcode.service";
-import { type IWhisperOptions } from "src/interface/whisper-options";
-export declare class TranscriptionService {
+import { type IWhisperOptions } from "src/interface/Iwhisper-options";
+export declare class UploadService {
     private transcodeService;
     constructor(transcodeService: TranscodeService);
     create(filePath: string, options: IWhisperOptions): Promise<string>;
