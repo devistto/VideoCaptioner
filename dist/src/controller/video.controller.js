@@ -12,39 +12,43 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UploadController = void 0;
+exports.VideoController = void 0;
 const common_1 = require("@nestjs/common");
 const multer_options_1 = require("../utils/multer-options");
 const platform_express_1 = require("@nestjs/platform-express");
-const upload_service_1 = require("../service/upload.service");
+const video_service_1 = require("../service/video.service");
 const whisper_options_dto_1 = require("../dto/whisper-options.dto");
 const file_cleaner_1 = require("../utils/file-cleaner");
 const fs_1 = require("fs");
 const swagger_1 = require("@nestjs/swagger");
-let UploadController = class UploadController {
-    videoController;
-    constructor(videoController) {
-        this.videoController = videoController;
+let VideoController = class VideoController {
+    videoService;
+    constructor(videoService) {
+        this.videoService = videoService;
     }
     async create(file, dto) {
         if (!file)
             throw new common_1.BadRequestException('File is missing');
-        const videoPath = await this.uploadService.create(file.path, dto);
+        const videoPath = await this.videoService.create(file.path, dto);
         const stream = (0, fs_1.createReadStream)(videoPath);
         stream.on('close', () => {
             (0, file_cleaner_1.fileCleaner)(videoPath);
         });
         return new common_1.StreamableFile(stream, {
             type: 'video/mp4',
-            disposition: `inline; filename="${file.originalname}"`,
+            disposition: `attachment; filename="${file.originalname}"`,
         });
     }
 };
-exports.UploadController = UploadController;
+exports.VideoController = VideoController;
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('video', multer_options_1.multerOptions)),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Create a subtitled video',
+        description: 'Uploads a video, processes it using Whisper and FFmpeg, and returns the final MP4 with embedded subtitles.'
+    }),
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
@@ -74,23 +78,38 @@ __decorate([
             'video/mp4': {
                 schema: { type: 'string', format: 'binary' }
             }
-        }
+        },
+        description: 'Returns a processed video with embedded subtitles.'
     }),
     (0, swagger_1.ApiBadRequestResponse)({
-        description: 'Invalid request: missing file, exceeded file size/duration or else',
+        description: 'Invalid request: missing file, exceeded file size / duration limit or else.',
+        schema: {
+            example: {
+                statusCode: 400,
+                message: 'File is missing',
+                error: 'Bad Request'
+            }
+        }
     }),
     (0, swagger_1.ApiResponse)({
         status: 500,
-        description: 'Internal server error while processing the video.'
+        description: 'Internal server error',
+        schema: {
+            example: {
+                statusCode: 500,
+                message: "Something went wrong while processing file",
+                error: 'Internal Server Error'
+            }
+        }
     }),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, whisper_options_dto_1.WhisperOptionsDto]),
     __metadata("design:returntype", Promise)
-], UploadController.prototype, "create", null);
-exports.UploadController = UploadController = __decorate([
+], VideoController.prototype, "create", null);
+exports.VideoController = VideoController = __decorate([
     (0, common_1.Controller)('videos'),
-    __metadata("design:paramtypes", [upload_service_1.UploadService])
-], UploadController);
-//# sourceMappingURL=upload.controller.js.map
+    __metadata("design:paramtypes", [video_service_1.VideoService])
+], VideoController);
+//# sourceMappingURL=video.controller.js.map

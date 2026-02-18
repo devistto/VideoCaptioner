@@ -28,11 +28,11 @@ let TranscodeService = class TranscodeService {
                     (0, file_cleaner_1.fileCleaner)(filePath);
                     return reject(new common_1.BadRequestException("Unable to validate file properities"));
                 }
-                const maxDuration = 300;
+                const maxDuration = 600;
                 const duration = metadata.format?.duration;
                 if (!duration || duration > maxDuration) {
                     (0, file_cleaner_1.fileCleaner)(filePath);
-                    return reject(new common_1.BadRequestException("File exceeds max time limit of 5 minutes"));
+                    return reject(new common_1.BadRequestException("File exceeds max time limit of 10 minutes"));
                 }
                 return resolve(true);
             });
@@ -51,7 +51,7 @@ let TranscodeService = class TranscodeService {
                 .on("error", err => {
                 (0, file_cleaner_1.fileCleaner)(filePath);
                 console.log(err);
-                reject(new common_1.BadRequestException("Something went wrong while processing file"));
+                reject(new Error("Something went wrong while processing file"));
             })
                 .save(outputPath);
         });
@@ -67,7 +67,7 @@ let TranscodeService = class TranscodeService {
         return new Promise((resolve, reject) => {
             (0, ffmpeg_config_1.default)(filePath)
                 .outputOptions([
-                `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=12,PrimaryColour=&H00FFFFFF,Outline=0,Shadow=3,BackColour=&H80000000,Alignment=2,MarginV=30'`,
+                `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=12,PrimaryColour=&H00FFFFFF,Outline=0.8,OutlineColour=&H70000000,Shadow=0.8,BackColour=&H80000000,Alignment=1,MarginV=30'`,
                 "-c:a copy"
             ])
                 .videoCodec("libx264")
@@ -76,7 +76,7 @@ let TranscodeService = class TranscodeService {
                 .on("error", err => {
                 (0, file_cleaner_1.fileCleaner)(filePath);
                 console.error(err);
-                reject(new common_1.BadRequestException("Something went wrong while processing file"));
+                reject(new Error("Something went wrong while processing file"));
             })
                 .save(outputPath);
         });

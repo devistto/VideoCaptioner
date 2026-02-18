@@ -1,0 +1,93 @@
+import { BadRequestException, Body, Controller, Post, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { multerOptions } from "src/utils/multer-options";
+import { FileInterceptor } from "@nestjs/platform-express"
+import { VideoService } from "src/service/video.service";
+import { WhisperLanguage, WhisperOptionsDto } from "src/dto/whisper-options.dto";
+import { fileCleaner } from "src/utils/file-cleaner";
+import { createReadStream } from "fs";
+import { ApiBadRequestResponse, ApiBody, ApiConsumes, ApiOperation, ApiResponse } from "@nestjs/swagger";
+
+@Controller('videos')
+export class VideoController {
+    constructor(private videoService: VideoService) { }
+
+    @Post()
+    @UseInterceptors(FileInterceptor('video', multerOptions))
+    @ApiConsumes('multipart/form-data')
+    @ApiOperation({
+        summary: 'Create a subtitled video',
+        description: 'Uploads a video, processes it using Whisper and FFmpeg, and returns the final MP4 with embedded subtitles.'
+    })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                video: {
+                    type: 'string',
+                    format: 'binary',
+                    description: "A 500MB video file, maximum 5 minutes long - Supported formats: MP4, MPEG, QuickTime, WMV, AVI, WebM, Ogg, FLV, 3GPP, 3GPP2",
+                },
+                task: {
+                    type: "string",
+                    enum: ["translate", "transcribe"],
+                    default: "transcribe"
+                },
+                audio_language: {
+                    type: "string",
+                    enum: Object.values(WhisperLanguage),
+                    default: WhisperLanguage.English
+                }
+            },
+            required: ["task", 'video', "audio_language"]
+        }
+    })
+    @ApiResponse({
+        status: 201,
+        content: {
+            'video/mp4': {
+                schema: { type: 'string', format: 'binary' }
+            }
+        },
+        description: 'Returns a processed video with embedded subtitles.'
+    })
+    @ApiBadRequestResponse({
+        description: 'Invalid request: missing file, exceeded file size / duration limit or else.',
+        schema: {
+            example: {
+                statusCode: 400,
+                message: 'File is missing',
+                error: 'Bad Request'
+            }
+        }
+    })
+    @ApiResponse({
+        status: 500,
+        description: 'Internal server error',
+        schema: {
+            example: {
+                statusCode: 500,
+                message: "Something went wrong while processing file",
+                error: 'Internal Server Error'
+            }
+        }
+    })
+    async create(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() dto: WhisperOptionsDto,
+    ): Promise<StreamableFile> {
+        if (!file) throw new BadRequestException('File is missing');
+
+        const videoPath = await this.videoService.create(file.path, dto);
+
+        const stream = createReadStream(videoPath);
+
+        stream.on('close', () => {
+            fileCleaner(videoPath);
+        });
+
+        return new StreamableFile(stream, {
+            type: 'video/mp4',
+            disposition: `attachment; filename="${file.originalname}"`,
+        });
+    }
+}

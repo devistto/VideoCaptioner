@@ -22,12 +22,12 @@ export class TranscodeService {
                     return reject(new BadRequestException("Unable to validate file properities"))
                 }
 
-                const maxDuration = 300;
+                const maxDuration = 600;
                 const duration = metadata.format?.duration;
 
                 if (!duration || duration > maxDuration) {
                     fileCleaner(filePath);
-                    return reject(new BadRequestException("File exceeds max time limit of 5 minutes"));
+                    return reject(new BadRequestException("File exceeds max time limit of 10 minutes"));
                 }
 
                 return resolve(true)
@@ -49,7 +49,7 @@ export class TranscodeService {
                 .on("error", err => {
                     fileCleaner(filePath);
                     console.log(err)
-                    reject(new BadRequestException("Something went wrong while processing file"))
+                    reject(new Error("Something went wrong while processing file"))
                 })
                 .save(outputPath);
         })
@@ -70,7 +70,7 @@ export class TranscodeService {
         return new Promise((resolve, reject) => {
             ffmpeg(filePath)
                 .outputOptions([
-                    `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=12,PrimaryColour=&H00FFFFFF,Outline=0,Shadow=3,BackColour=&H80000000,Alignment=2,MarginV=30'`,
+                    `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=12,PrimaryColour=&H00FFFFFF,Outline=0.8,OutlineColour=&H70000000,Shadow=0.8,BackColour=&H80000000,Alignment=1,MarginV=30'`,
                     "-c:a copy"
                 ])
                 .videoCodec("libx264")
@@ -79,7 +79,7 @@ export class TranscodeService {
                 .on("error", err => {
                     fileCleaner(filePath);
                     console.error(err);
-                    reject(new BadRequestException("Something went wrong while processing file"));
+                    reject(new Error("Something went wrong while processing file"));
                 })
                 .save(outputPath);
         });

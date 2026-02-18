@@ -9,8 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const transcode_service_1 = require("../service/transcode.service");
-const upload_controller_1 = require("../controller/upload.controller");
-const upload_service_1 = require("../service/upload.service");
+const video_controller_1 = require("../controller/video.controller");
+const video_service_1 = require("../service/video.service");
 const rate_limit_module_1 = require("./rate-limit.module");
 let AppModule = class AppModule {
 };
@@ -18,8 +18,8 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [rate_limit_module_1.RateLimitModule],
-        controllers: [upload_controller_1.UploadController],
-        providers: [upload_service_1.UploadService, transcode_service_1.TranscodeService]
+        controllers: [video_controller_1.VideoController],
+        providers: [video_service_1.VideoService, transcode_service_1.TranscodeService]
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

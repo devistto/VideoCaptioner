@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WhisperOptionsDto = exports.WhisperLanguage = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 var WhisperLanguage;
 (function (WhisperLanguage) {
@@ -77,10 +78,22 @@ class WhisperOptionsDto {
 }
 exports.WhisperOptionsDto = WhisperOptionsDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: "Sets whether the generated subtitles will be translated to English during processing or not",
+        enum: ["transcribe", "translate"],
+        required: true,
+        default: "transcribe"
+    }),
     (0, class_validator_1.IsIn)(["translate", "transcribe"]),
     __metadata("design:type", String)
 ], WhisperOptionsDto.prototype, "task", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: "Sets audio language",
+        enum: WhisperLanguage,
+        required: true,
+        default: WhisperLanguage.English
+    }),
     (0, class_validator_1.IsEnum)(WhisperLanguage),
     __metadata("design:type", String)
 ], WhisperOptionsDto.prototype, "audio_language", void 0);

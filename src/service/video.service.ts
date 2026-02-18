@@ -4,7 +4,7 @@ import { readFile } from "fs/promises";
 import { type IWhisperOptions } from "src/interface/Iwhisper-options";
 
 @Injectable()
-export class UploadService {
+export class VideoService {
     constructor(private transcodeService: TranscodeService) { }
 
     async create(filePath: string, options: IWhisperOptions) {

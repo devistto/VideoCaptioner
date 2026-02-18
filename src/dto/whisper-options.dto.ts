@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsIn } from "class-validator";
 
 export enum WhisperLanguage {
@@ -13,9 +14,21 @@ export enum WhisperLanguage {
 }
 
 export class WhisperOptionsDto {
+    @ApiProperty({
+        description: "Sets whether the generated subtitles will be translated to English during processing or not",
+        enum: ["transcribe", "translate"],
+        required: true,
+        default: "transcribe"
+    })
     @IsIn(["translate", "transcribe"])
     task!: "translate" | "transcribe"
 
+    @ApiProperty({
+        description: "Sets audio language",
+        enum: WhisperLanguage,
+        required: true,
+        default: WhisperLanguage.English
+    })
     @IsEnum(WhisperLanguage)
     audio_language!: WhisperLanguage
 }
