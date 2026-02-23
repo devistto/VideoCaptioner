@@ -17,8 +17,8 @@ export class VideoService {
 
         formData.append("audio_file", blob, "audio.wav");
 
-        const baseUrl = "http://localhost:9000/asr?output=srt";
-        const queryParams = `?task=${options.task}&language=${options.audio_language}&output=srt`;
+        const baseUrl = "http://whisper-asr:9000/asr?";
+        const queryParams = `task=${options.task}&language=${options.audio_language}&output=srt`;
         const url = baseUrl + queryParams
 
         const response = await fetch(url, {

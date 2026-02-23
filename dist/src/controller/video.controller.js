@@ -51,7 +51,7 @@ __decorate([
                 video: {
                     type: 'string',
                     format: 'binary',
-                    description: "A 500MB video file, maximum 5 minutes long - Supported formats: MP4, MPEG, QuickTime, WMV, AVI, WebM, Ogg, FLV, 3GPP, 3GPP2",
+                    description: "A ~300MB video file, maximum 3 minutes long - Supported formats: MP4, MPEG, QuickTime, WMV, AVI, WebM, Ogg, FLV, 3GPP, 3GPP2",
                 },
                 task: {
                     type: "string",

@@ -25,8 +25,8 @@ let VideoService = class VideoService {
         const blob = new Blob([buffer], { type: "audio/wav" });
         const formData = new FormData();
         formData.append("audio_file", blob, "audio.wav");
-        const baseUrl = "http://localhost:9000/asr?output=srt";
-        const queryParams = `?task=${options.task}&language=${options.audio_language}&output=srt`;
+        const baseUrl = "http://whisper-asr:9000/asr?";
+        const queryParams = `task=${options.task}&language=${options.audio_language}&output=srt`;
         const url = baseUrl + queryParams;
         const response = await fetch(url, {
             method: "POST",

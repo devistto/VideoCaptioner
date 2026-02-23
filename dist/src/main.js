@@ -25,7 +25,7 @@ async function bootstrap() {
     const documentFactory = () => swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('doc', app, documentFactory);
     app.useGlobalPipes(new common_1.ValidationPipe(validationOptionsObj));
-    await app.listen(process.env.PORT ?? 8000);
+    await app.listen(process.env.PORT ?? 8000, () => console.log("Swegger UI on http://localhost:8000/doc"));
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

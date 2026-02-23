@@ -36,6 +36,7 @@ let TranscodeService = class TranscodeService {
     }
     async extract(filePath) {
         const outputPath = path_1.default.join(path_1.default.dirname(filePath), "audio.wav");
+        console.log(filePath);
         return new Promise((resolve, reject) => {
             (0, ffmpeg_config_1.default)(filePath)
                 .noVideo()
@@ -45,6 +46,7 @@ let TranscodeService = class TranscodeService {
                 .format("wav")
                 .on('end', () => resolve(outputPath))
                 .on("error", err => {
+                console.log(err);
                 reject(new Error("Something went wrong while processing file"));
             })
                 .save(outputPath);
@@ -55,19 +57,18 @@ let TranscodeService = class TranscodeService {
         const contentPath = `${dir}/subs.srt`;
         node_fs_1.default.writeFileSync(contentPath, content, { encoding: "utf8" });
         const outputPath = path_1.default.join(path_1.default.dirname(filePath), "output.mp4");
-        const normalizedSrtPath = contentPath
-            .replace(/\\/g, "/")
-            .replace(/:/g, "\\:");
+        const normalizedSrtPath = contentPath.replace(/\\/g, "/");
         return new Promise((resolve, reject) => {
             (0, ffmpeg_config_1.default)(filePath)
                 .outputOptions([
-                `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=12,PrimaryColour=&H00FFFFFF,Outline=0.8,OutlineColour=&H70000000,Shadow=0.8,BackColour=&H80000000,Alignment=1,MarginV=30'`,
+                `-vf subtitles='${normalizedSrtPath}:force_style=FontName=Arial,FontSize=10,PrimaryColour=&H00FFFFFF,Outline=0.6,OutlineColour=&H70000000,Shadow=0.6,BackColour=&H80000000,Alignment=2,MarginV=30'`,
                 "-c:a copy"
             ])
                 .videoCodec("libx264")
                 .format("mp4")
                 .on("end", () => resolve(outputPath))
                 .on("error", err => {
+                console.log(err);
                 reject(new Error("Something went wrong while processing file"));
             })
                 .save(outputPath);

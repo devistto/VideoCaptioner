@@ -1,9 +1,19 @@
 services:
+
+  backend:
+    build: 
+      context: .
+      dockerfile: dockerFile
+    container_name: backend
+    ports:
+      - 8000:8000
   whisper-asr:
+    depends_on:
+      - backend
     image: onerahmet/openai-whisper-asr-webservice:latest
     container_name: whisper-asr
-    ports:
-      - "9000:9000"
+    expose:
+      - 9000
     environment:
       ASR_ENGINE: faster_whisper   
       ASR_MODEL: base             
