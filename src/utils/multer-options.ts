@@ -20,7 +20,7 @@ export const multerOptions: MulterOptions = {
         },
     }),
     limits: {
-        fileSize: 250 * 1024 * 1024
+        fileSize: 150 * 1024 * 1024
     },
 
     fileFilter(req, file, callback) {

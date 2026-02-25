@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Post, StreamableFile, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { multerOptions } from "src/utils/multer-options";
 import { FileInterceptor } from "@nestjs/platform-express"
 import { VideoService } from "src/service/video.service";
@@ -28,7 +28,7 @@ export class VideoController {
                 video: {
                     type: 'string',
                     format: 'binary',
-                    description: "A ~300MB video file, maximum 3 minutes long - Supported formats: MP4, MPEG, QuickTime, WMV, AVI, WebM, Ogg, FLV, 3GPP, 3GPP2",
+                    description: "A 100MB video file - Supported formats: MP4, MPEG, QuickTime, WMV, AVI, WebM, Ogg, FLV, 3GPP, 3GPP2",
                 },
                 task: {
                     type: "string",
@@ -74,12 +74,8 @@ export class VideoController {
             }
         }
     })
-    async create(
-        @UploadedFile() file: Express.Multer.File,
-        @Body() dto: WhisperOptionsDto,
-    ): Promise<StreamableFile> {
+    async create(@UploadedFile() file: Express.Multer.File, @Body() dto: WhisperOptionsDto): Promise<StreamableFile> {
         const videoPath = await this.videoService.create(file.path, dto);
-
         const stream = createReadStream(videoPath);
 
         return new StreamableFile(stream, {

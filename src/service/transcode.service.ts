@@ -19,13 +19,6 @@ export class TranscodeService {
                     return reject(new BadRequestException("Unable to validate file properities"))
                 }
 
-                const maxDuration = 180;
-                const duration = metadata.format?.duration;
-
-                if (!duration || duration > maxDuration) {
-                    return reject(new BadRequestException("File exceeds max time limit of 3 minutes"));
-                }
-
                 return resolve(true)
             });
         })
