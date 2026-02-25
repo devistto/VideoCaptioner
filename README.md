@@ -1,27 +1,33 @@
-# Auto Caption API
-API for automatic video subtitling that returns a final video with embedded captions.
-## Overview
-Given a video file, this API automatically extracts and transcribes the speech from the audio using Whisper API (base model), generates .srt file, embeds it into the original video and returns the result. 
-A structured processing pipeline built with NestJS handles the entire workflow. All files created and stored locally are cleaned up after processing, whether successful or not.
+# Video Captioner
+___
+A self-hosted HTTP API for video captioning.
+> Upload → Validate → Extract Audio → Generate Subtitles → Render Final Video 
 
-#### Technologies
+[Click here](http://example.com) to try an available online version.
+
+### Technologies
+___
 - TypeScript
-- Docker
+- Docker & Docker compose
 - Nestjs
-- FFmpeg
-- Whisper
+- FFmpeg & FFprobe
+- Whisper (ASR engine)
 
-#### Try it out
-[Here](http://example.com) you can try an available online version.
+### Quick usage
+___
+Prerequisite: Docker installed and running.
+```
+git clone https://github.com/devistto/VideoCaptioner && \
+cd AutoCaption-api && \
+docker compose up --build
+```
 
-#### How to run: 
-1: Clone the repo  
-`git clone https://github.com/devistto/AutoCaption-api.git`
+Swagger documentation [http://localhost:8000/doc](http://localhost:8000/doc)
 
-2: Run with Docker
-`docker-compose up --build`
-
-3: Open Swagger documentation [http://localhost:8000/doc](http://localhost:8000/doc)
-
-#### Improvements
-A queue system, multiple simultaneous uploads and cloud storage integration could be implemented. But for now it's out of question.
+### Environment variables
+___
+- `ASR_ENGINE`: Engine selection (openai_whisper, faster_whisper, whisperx)
+- `ASR_MODEL`: Model selection (tiny, base, small, medium, large-v3, etc.)
+- `ASR_MODEL_PATH`: Custom path to store/load models
+- `ASR_DEVICE`: Device selection (cuda, cpu)
+- `MODEL_IDLE_TIMEOUT`: Timeout for model unloading
