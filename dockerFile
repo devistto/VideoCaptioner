@@ -1,13 +1,10 @@
-FROM node:24-alpine
+FROM onerahmet/openai-whisper-asr-webservice:latest
 
-WORKDIR /app
+EXPOSE 9000
 
-COPY package*.json ./
+ENV ASR_ENGINE=faster_whisper
+ENV ASR_MODEL=base
+ENV ASR_DEVICE=cpu
+ENV ASR_MODEL_PATH=/models
 
-RUN npm install
-
-COPY . .
-
-RUN apk add --no-cache ttf-dejavu
-
-CMD [ "npm", "run", "start:dev" ]
+VOLUME [ "/models" ]
