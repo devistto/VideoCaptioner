@@ -1,0 +1,10 @@
+FROM onerahmet/openai-whisper-asr-webservice:latest
+
+EXPOSE 9000
+
+ENV ASR_ENGINE=faster_whisper
+ENV ASR_MODEL=base
+ENV ASR_DEVICE=cpu
+ENV ASR_MODEL_PATH=/models
+
+VOLUME [ "/models" ]
